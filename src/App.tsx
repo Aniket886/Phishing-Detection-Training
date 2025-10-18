@@ -149,10 +149,10 @@ export default function App() {
                 </div>
                 <div className="email-meta">
                   <div className="email-field">
-                    <span className="field-label">From:</span> {current.from}
+                    <span className="field-label">From:</span> {current.sender}
                   </div>
                   <div className="email-field">
-                    <span className="field-label">To:</span> {current.to}
+                    <span className="field-label">To:</span> you@company.com
                   </div>
                   <div className="email-field">
                     <span className="field-label">Subject:</span> {current.subject}
@@ -264,23 +264,11 @@ function Welcome({ total, onStart }: { total: number; onStart: () => void }) {
   );
 }
 
-function EmailCard({ email }: { email: EmailScenario }) {
-  return (
-    <div className="email-card">
-      <div className="email-header">
-        <div><span className="label">From:</span> {email.sender}</div>
-        <div><span className="label">Subject:</span> {email.subject}</div>
-      </div>
-      <div className="email-body">{email.body}</div>
-    </div>
-  );
-}
+
 
 function Feedback({
-  email,
   correct,
   timedOut,
-  isLast,
   onNext,
   lives,
 }: {
@@ -326,7 +314,11 @@ function Result({ score, total, onRestart, lives }: { score: number; total: numb
         <div className="result-stats">
           <div className="result-stat">
             <span className="stat-label">Your flag:</span>
-            <span className="stat-value flag-value">THM{_phish_you_not}</span>
+            <span className="stat-value flag-value">THM{`{phish_you_not}`}</span>
+          </div>
+          <div className="result-stat">
+            <span className="stat-label">Score:</span>
+            <span className="stat-value">{score}/{total}</span>
           </div>
           <div className="result-stat">
              <span className="stat-label">Lives remaining:</span>
