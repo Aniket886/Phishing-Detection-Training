@@ -8,104 +8,107 @@ export type EmailScenario = {
 };
 
 export const scenarios: EmailScenario[] = [
+  // Simple Inquiries (4 scenarios)
   {
     id: 1,
-    sender: "IT Support <it-support@company-security.com>",
-    subject: "Password Expiration Notice",
+    sender: "Reception <reception@company.com>",
+    subject: "Visitor parking validation",
     body:
-      "Your password will expire in 24 hours. To avoid losing access, please reset it immediately using the secure portal.",
-    isPhishing: true,
+      "Your visitor John Smith needs parking validation for today's meeting. Please confirm the meeting time.",
+    isPhishing: false,
     explanation:
-      "Spoofed domain and urgent language. Real notices use official company domain and scheduled reminders.",
+      "Legitimate internal communication from reception with a reasonable request for meeting confirmation.",
   },
   {
     id: 2,
-    sender: "Accounts <accounts@vendors-billing.com>",
-    subject: "Invoice Overdue - Action Required",
+    sender: "Customer Service <support@quickdelivery.com>",
+    subject: "Package delivery confirmation needed",
     body:
-      "We attempted to process payment for invoice #98411. Download the invoice and pay now to avoid service suspension.",
-    isPhishing: true,
+      "Your package #QD789123 is ready for delivery. Please confirm your availability for tomorrow between 9-5 PM.",
+    isPhishing: false,
     explanation:
-      "Unknown vendor, pressure tactics, and download/pay links. Verify vendors via known channels.",
+      "Standard delivery notification with tracking number and reasonable delivery window request.",
   },
   {
     id: 3,
-    sender: "CEO <ceo@company-mail.com>",
-    subject: "Quick favor",
+    sender: "Banking Alert <alerts@securebank-notify.com>",
+    subject: "Account balance low",
     body:
-      "Are you at your desk? I need you to purchase 10 gift cards now and send the codes here. It’s urgent.",
+      "Your checking account balance is below $50. Log in to your account to view details and transfer funds.",
     isPhishing: true,
     explanation:
-      "Classic CEO fraud. Unusual request, urgency, and gift cards. Confirm via official channels.",
+      "Suspicious domain mimicking a bank. Real banks use their official domains and don't request immediate login.",
   },
   {
     id: 4,
-    sender: "Microsoft 365 <security@microsoft-notice.com>",
-    subject: "Unusual sign-in activity",
+    sender: "Facilities <facilities@company.com>",
+    subject: "Office temperature adjustment",
     body:
-      "We detected a sign-in from a new location. Verify your identity to keep your account secure.",
-    isPhishing: true,
-    explanation:
-      "Impersonation and non-Microsoft domain. Use your normal sign-in path or official security portal.",
-  },
-  {
-    id: 5,
-    sender: "HR <hr@company.com>",
-    subject: "Updated Remote Work Policy",
-    body:
-      "Please review the updated remote work policy on the intranet and acknowledge by Friday.",
+      "We've received reports about temperature issues on the 3rd floor. Please let us know if you're experiencing discomfort.",
     isPhishing: false,
     explanation:
-      "Consistent domain, reasonable request, and references internal intranet rather than external links.",
+      "Normal facilities communication addressing a common office issue with appropriate company domain.",
+  },
+  // Moderately Complex Requests (3 scenarios)
+  {
+    id: 5,
+    sender: "Project Manager <sarah.williams@clientcorp.com>",
+    subject: "Contract amendment - signature required",
+    body:
+      "Hi, we need to amend section 4.2 of our service agreement due to scope changes. I've attached the updated contract for your review and signature. Please return by end of week to avoid project delays.",
+    isPhishing: true,
+    explanation:
+      "External domain requesting contract signatures with urgency. Verify through known contacts and use official contract processes.",
   },
   {
     id: 6,
-    sender: "Delivery <updates@parcel-trackers.com>",
-    subject: "Package delayed - confirm address",
+    sender: "Finance <finance@company.com>",
+    subject: "Q4 budget review meeting",
     body:
-      "Your package could not be delivered. Confirm your address to schedule redelivery.",
-    isPhishing: true,
+      "Please join the Q4 budget review meeting on Friday at 2 PM in Conference Room B. Bring your department's expense reports and projections for next quarter. Meeting agenda is attached.",
+    isPhishing: false,
     explanation:
-      "Generic sender and request for personal info. Track packages using the courier’s official site.",
+      "Legitimate internal meeting request with specific details, appropriate sender, and reasonable business context.",
   },
   {
     id: 7,
-    sender: "Training <academy@company.com>",
-    subject: "Security Awareness Certificate",
+    sender: "Vendor Relations <vendor@supplychainpro.com>",
+    subject: "Invoice processing system update",
     body:
-      "Congrats on completing training. Download your certificate from the Learning Portal.",
-    isPhishing: false,
-    explanation:
-      "Normal company communication pointing to internal portal. No urgency or suspicious attachments.",
-  },
-  {
-    id: 8,
-    sender: "Payroll <payroll@company-pay.com>",
-    subject: "Direct deposit change confirmation",
-    body:
-      "We received a request to change your bank details. Confirm to finalize the update.",
+      "Our invoice processing system has been updated. Please re-submit your banking details through our new secure portal to ensure continued payment processing. Access the portal using the link below.",
     isPhishing: true,
     explanation:
-      "Financial changes via email are risky. Contact payroll through official channels to verify.",
+      "Requests for banking details via email are red flags. Legitimate vendors don't ask for financial information this way.",
+  },
+  // Challenging Situations (3 scenarios)
+  {
+    id: 8,
+    sender: "Legal Department <legal@company.com>",
+    subject: "Confidential: Employment verification request",
+    body:
+      "We've received an employment verification request for your position from Mortgage Solutions Inc. This appears to be for a home loan application. Please confirm if you authorized this request and provide your employee ID for verification.",
+    isPhishing: false,
+    explanation:
+      "Legitimate HR/Legal communication about employment verification, which is a normal business process for loan applications.",
   },
   {
     id: 9,
-    sender: "Events <events@techconf.org>",
-    subject: "Invitation: Industry Tech Conference",
+    sender: "Security Team <security@company-systems.com>",
+    subject: "Critical: Suspicious activity detected",
     body:
-      "You’re invited to speak at the upcoming tech conference. View agenda and RSVP.",
-    isPhishing: false,
+      "Our security systems detected unusual login attempts on your account from multiple international locations. Your account has been temporarily locked. Click here to verify your identity and restore access immediately to prevent permanent suspension.",
+    isPhishing: true,
     explanation:
-      "Legitimate non-profit domain and reasonable request. Still confirm via website or known contacts.",
+      "Impersonation with urgency and fear tactics. The domain is suspicious, and real security teams use official channels for account issues.",
   },
   {
     id: 10,
-    sender: "Alex Chen <alex.chen@company.com>",
-    subject: "Shared design assets",
+    sender: "Board Secretary <board.secretary@company.com>",
+    subject: "Confidential: Board meeting minutes review",
     body:
-      "I’ve shared the latest design assets. Access the folder using our approved storage.",
+      "As requested by the Board of Directors, please review the attached confidential meeting minutes from last week's session. Your department's budget allocation is discussed on page 3. Please confirm receipt and provide any corrections by tomorrow morning.",
     isPhishing: false,
     explanation:
-      "Known coworker and approved storage reference. If unsure, confirm directly with sender.",
+      "Legitimate internal communication from board secretary with appropriate confidentiality language and reasonable timeline.",
   },
 ];

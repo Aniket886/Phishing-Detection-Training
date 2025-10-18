@@ -6,7 +6,6 @@ type Stage = "welcome" | "playing" | "result" | "gameOver";
 
 const TIME_LIMIT = 30;
 const LIVES = 3;
-const SWAP_INTERVAL = 3; // Swap button positions every 3 questions
 
 export default function App() {
   const total = scenarios.length;
@@ -17,7 +16,10 @@ export default function App() {
   const [score, setScore] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [lastCorrect, setLastCorrect] = useState<boolean | null>(null);
-  const [buttonsSwapped, setButtonsSwapped] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [showFollowUp, setShowFollowUp] = useState(false);
+  const [followUpOptions, setFollowUpOptions] = useState<string[]>([]);
+  const [buttonsSwapped, setButtonsSwapped] = useState<boolean>(false);
 
   const current: EmailScenario | undefined = useMemo(() => scenarios[index], [index]);
 
@@ -50,14 +52,43 @@ export default function App() {
     }
   }, [lives, stage]);
 
-  useEffect(() => {
-    // Randomize button positions at predetermined intervals
-    if (stage === "playing" && index > 0 && index % SWAP_INTERVAL === 0) {
-      const shouldSwap = Math.random() > 0.5;
-      setButtonsSwapped(shouldSwap);
-      console.log(`Question ${index + 1}: Buttons ${shouldSwap ? 'swapped' : 'normal order'}`);
+  function generateFollowUpOptions(correctEmail: EmailScenario): string[] {
+    const correctAnswer = correctEmail.explanation;
+    const otherExplanations = scenarios
+      .filter(s => s.id !== correctEmail.id && s.explanation !== correctAnswer)
+      .map(s => s.explanation);
+    
+    const shuffledOthers = [...otherExplanations].sort(() => Math.random() - 0.5);
+    const wrongAnswers = shuffledOthers.slice(0, 2);
+    
+    const allOptions = [correctAnswer, ...wrongAnswers];
+    return allOptions.sort(() => Math.random() - 0.5);
+  }
+
+  function randomizeButtonOrder() {
+    setButtonsSwapped(Math.random() < 0.5);
+  }
+
+  function handlePhishingClick() {
+    if (current) {
+      const options = generateFollowUpOptions(current);
+      setFollowUpOptions(options);
+      setShowFollowUp(true);
     }
-  }, [index, stage]);
+  }
+
+  function handleLegitimateClick() {
+    classify("legit");
+  }
+
+  function handleFollowUpAnswer(selectedAnswer: string) {
+    if (!current) return;
+    const correct = selectedAnswer === current.explanation;
+    setLastCorrect(correct);
+    setShowFeedback(true);
+    if (correct) setScore((s) => s + 1);
+    else setLives((l) => l - 1);
+  }
 
   function startGame() {
     setStage("playing");
@@ -67,7 +98,10 @@ export default function App() {
     setTimeLeft(TIME_LIMIT);
     setShowFeedback(false);
     setLastCorrect(null);
-    setButtonsSwapped(false);
+    setSelectedOption("");
+    setShowFollowUp(false);
+    setFollowUpOptions([]);
+    randomizeButtonOrder();
   }
 
   function classify(choice: "phish" | "legit") {
@@ -92,6 +126,10 @@ export default function App() {
     setShowFeedback(false);
     setLastCorrect(null);
     setTimeLeft(TIME_LIMIT);
+    setSelectedOption("");
+    setShowFollowUp(false);
+    setFollowUpOptions([]);
+    randomizeButtonOrder();
   }
 
   function reset() {
@@ -102,6 +140,9 @@ export default function App() {
     setTimeLeft(TIME_LIMIT);
     setShowFeedback(false);
     setLastCorrect(null);
+    setSelectedOption("");
+    setShowFollowUp(false);
+    setFollowUpOptions([]);
     setButtonsSwapped(false);
   }
 
@@ -164,27 +205,46 @@ export default function App() {
               </div>
             </div>
             
-            {!showFeedback && (
+            {!showFeedback && !showFollowUp && (
               <div className="action-buttons">
                 {buttonsSwapped ? (
                   <>
-                    <button className="btn-is-phishing" onClick={() => classify("phish")}>
+                    <button className="btn-is-phishing" onClick={handlePhishingClick}>
                       THIS IS PHISHING
                     </button>
-                    <button className="btn-not-phishing" onClick={() => classify("legit")}>
+                    <button className="btn-not-phishing" onClick={handleLegitimateClick}>
                       THIS IS NOT PHISHING
                     </button>
                   </>
                 ) : (
                   <>
-                    <button className="btn-not-phishing" onClick={() => classify("legit")}>
+                    <button className="btn-not-phishing" onClick={handleLegitimateClick}>
                       THIS IS NOT PHISHING
                     </button>
-                    <button className="btn-is-phishing" onClick={() => classify("phish")}>
+                    <button className="btn-is-phishing" onClick={handlePhishingClick}>
                       THIS IS PHISHING
                     </button>
                   </>
                 )}
+              </div>
+            )}
+
+            {showFollowUp && !showFeedback && (
+              <div className="follow-up-section">
+                <div className="follow-up-question">
+                  Why is this phishing? Select the single correct reason:
+                </div>
+                <div className="follow-up-options">
+                  {followUpOptions.map((option, index) => (
+                    <button
+                      key={index}
+                      className="follow-up-option"
+                      onClick={() => handleFollowUpAnswer(option)}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
             
@@ -264,11 +324,23 @@ function Welcome({ total, onStart }: { total: number; onStart: () => void }) {
   );
 }
 
-
+function EmailCard({ email }: { email: EmailScenario }) {
+  return (
+    <div className="email-card">
+      <div className="email-header">
+        <div><span className="label">From:</span> {email.sender}</div>
+        <div><span className="label">Subject:</span> {email.subject}</div>
+      </div>
+      <div className="email-body">{email.body}</div>
+    </div>
+  );
+}
 
 function Feedback({
+  email,
   correct,
   timedOut,
+  isLast,
   onNext,
   lives,
 }: {
@@ -314,11 +386,7 @@ function Result({ score, total, onRestart, lives }: { score: number; total: numb
         <div className="result-stats">
           <div className="result-stat">
             <span className="stat-label">Your flag:</span>
-            <span className="stat-value flag-value">THM{`{phish_you_not}`}</span>
-          </div>
-          <div className="result-stat">
-            <span className="stat-label">Score:</span>
-            <span className="stat-value">{score}/{total}</span>
+            <span className="stat-value flag-value">THM{_phish_you_not}</span>
           </div>
           <div className="result-stat">
              <span className="stat-label">Lives remaining:</span>

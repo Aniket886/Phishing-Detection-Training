@@ -300,22 +300,32 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  backdrop-filter: blur(4px);
 }
 
 .feedback-modal {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  padding: 30px 40px;
-  max-width: 400px;
+  background: linear-gradient(135deg, #f0fdf4, #ffffff);
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(34, 197, 94, 0.2), 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 35px 45px;
+  max-width: 450px;
   width: 90%;
   position: relative;
-  text-align: left;
+  text-align: center;
+  border: 2px solid #22c55e;
+  transform: scale(0.95);
+  animation: modalAppear 0.3s ease-out forwards;
+}
+
+@keyframes modalAppear {
+  to {
+    transform: scale(1);
+  }
 }
 
 .feedback-close {
@@ -325,49 +335,76 @@
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: #999;
+  color: #16a34a;
   cursor: pointer;
   padding: 0;
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
 }
 
 .feedback-close:hover {
-  color: #666;
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #15803d;
 }
 
 .feedback-title {
-  margin: 0 0 15px 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
+  margin: 0 0 20px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #15803d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.feedback-title::before {
+  content: "✓";
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
 .feedback-message {
-  margin: 0 0 25px 0;
-  line-height: 1.5;
-  color: #666;
-  font-size: 0.95rem;
+  margin: 0 0 30px 0;
+  line-height: 1.6;
+  color: #166534;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .feedback-ok-btn {
-  background-color: #e5e7eb;
-  color: #374151;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
   border: none;
-  padding: 8px 20px;
-  border-radius: 4px;
+  padding: 12px 28px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
-  font-size: 0.9rem;
-  float: right;
-  transition: background-color 0.2s ease;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .feedback-ok-btn:hover {
-  background-color: #d1d5db;
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
 }
 
 /* Result Screen */
